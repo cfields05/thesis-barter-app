@@ -24,6 +24,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true
   },
-  "include": ["client/src/**/*", "server/**/*", "eslint.config.mjs"],
+  "include": ["client/src/**/*", "server/*", "eslint.config.mjs"],
   "exclude": ["node_modules", "dist"]
 }

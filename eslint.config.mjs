@@ -37,7 +37,7 @@ export default [
     },
     plugins: {
       '@typescript-eslint': tsPlugin,
-    }
+    },
   },
   {
     rules: {
