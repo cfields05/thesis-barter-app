@@ -13,7 +13,11 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['client/dist/**', 'server/db/generated/**', 'node_modules/**'],
+    ignores: [
+      'client/dist/**',
+      'server/db/generated/**',
+      'node_modules/**',
+    ],
   },
   ...compat.extends(
     'airbnb',
@@ -52,12 +56,6 @@ export default [
       'import/prefer-default-export': 'off',
       quotes: ['error', 'single', { avoidEscape: true }],
       'jsx-quotes': ['error', 'prefer-double'],
-    },
-  },
-  {
-    files: ['**/*.cjs'],
-    rules: {
-      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 ];

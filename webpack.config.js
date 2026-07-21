@@ -1,11 +1,16 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import dotenv from 'dotenv';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join('config', '.env') });
 
 const client = path.resolve(__dirname, 'client');
 
-require('dotenv').config({ path: path.join('config', '.env') });
-
-module.exports = {
+export default {
   entry: path.join(client, 'src', 'index.tsx'),
   output: {
     path: path.join(client, 'dist'),
@@ -15,7 +20,7 @@ module.exports = {
   watch: process.env.MODE === 'development',
   // cache: process.env.MODE === 'development' ? { type: 'filesystem' } : false,
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    extensions: ['.tsx', '.ts', '.jsx', '.js'],
   },
   module: {
     rules: [

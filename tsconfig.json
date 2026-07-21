@@ -7,8 +7,8 @@
     "esModuleInterop": true,
     "types": ["node", "pg"],
     "allowJs": true,
-    "sourceMap": true,
     "noEmit": true,
+    // "ignoreDeprecations": "6.0",
 
     // Recommended Options
     "strict": true,
@@ -17,8 +17,9 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true
   },
-  "include": ["client/src/**/*", "server/**/*", "eslint.config.mjs"],
+  "include": ["client/src/**/*", "server/*", "eslint.config.mjs"],
   "exclude": ["node_modules", "dist"]
 }
