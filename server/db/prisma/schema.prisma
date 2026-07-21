@@ -5,7 +5,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/models"
+  output   = "../generated"
 }
 
 datasource db {
