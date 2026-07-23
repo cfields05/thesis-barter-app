@@ -21,14 +21,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/auth/me', { credentials: 'include' })
+    fetch('/oauth2/check', { credentials: 'include' })
       .then((res) => (res.ok ? res.json() : null))
       .then(setUser)
       .finally(() => setLoading(false));
   }, []);
 
   const logout = useCallback(async () => {
-    await fetch('/api/auth/me', { method: 'POST', credentials: 'include' });
+    await fetch('/oauth2/logout', { method: 'POST', credentials: 'include' });
     setUser(null);
   }, []);
 
