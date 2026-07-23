@@ -16,6 +16,7 @@ import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 
 // dummy categories data
 const categories = [
@@ -165,6 +166,22 @@ export default function Posts() {
           </List>
         </Box>
       </Drawer>
+
+      {/* New Post Button */}
+      <Box sx={{
+        display: 'flex', justifyContent: 'flex-end', mb: 3, px: { xs: 2, md: 0 },
+      }}
+      >
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          sx={{
+            borderRadius: 8, textTransform: 'none', fontWeight: 'bold', px: 3,
+          }}
+        >
+          New Post
+        </Button>
+      </Box>
 
       {/* User Posts */}
       <Box sx={{
