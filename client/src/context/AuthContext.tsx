@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     fetch('/oauth2/check', { credentials: 'include' })
       .then((res) => (res.ok ? res.json() : null))
-      .then(setUser)
+      .then((data) => setUser(data.user))
       .finally(() => setLoading(false));
   }, []);
 
