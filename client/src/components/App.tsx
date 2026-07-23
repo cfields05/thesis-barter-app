@@ -4,6 +4,7 @@ import ThemeProvider from '@mui/system/ThemeProvider';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import theme from '../theme';
+import { AuthProvider } from '../context/AuthContext';
 
 // component imports
 import NavBar from './NavBar/NavBar';
@@ -13,7 +14,9 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <NavBar />
+      <AuthProvider>
+        <NavBar />
+      </AuthProvider>
       <Box
         component="main"
         sx={{

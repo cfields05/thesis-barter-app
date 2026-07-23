@@ -1,74 +1,87 @@
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Router } from 'express';
+import { Strategy as GoogleStrategy, type Profile } from 'passport-google-oauth20';
 import passport from 'passport';
-import express from 'express';
-import dotenv from 'dotenv';
-import { prisma } from '../db/index';
+import { prisma } from '../db/index.js';
 
-dotenv.config({ path: './config/.env' });
+async function findOrCreateGoogleUser(profile: Profile) {
+  const email = profile.emails?.[0]?.value;
+  if (!email) {
+    throw new Error('Google account has no email');
+  }
 
-const auth = express.Router();
+  const existing = await prisma.user.findFirst({
+    where: { OR: [{ googleId: profile.id }, { email }] },
+  });
+
+  if (existing) {
+    if (existing.googleId === profile.id) return existing;
+    return prisma.user.update({
+      where: { id: existing.id },
+      data: { googleId: profile.id, name: existing.name ?? profile.displayName },
+    });
+  }
+
+  return prisma.user.create({
+    data: { googleId: profile.id, email, name: profile.displayName },
+  });
+}
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL,
-      scope: ['profile', 'email'],
+      callbackURL: process.env.GOOGLE_CALLBACK_URL!,
     },
-
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        const user = await prisma.user.upsert({
-          where: { googleId: profile.id },
-          update: {
-            name: profile.displayName,
-            email: profile.emails![0].value,
-          },
-          create: {
-            googleId: profile.id,
-            name: profile.displayName,
-            email: profile.emails![0].value,
-          },
-        });
-        done(null, user);
-      } catch (err) {
-        console.error('Could not deserialize user: ', err);
-        return done(err);
-      }
+    (accessToken, refreshToken, profile, done) => {
+      findOrCreateGoogleUser(profile)
+        .then((user) => done(null, user))
+        .catch((err: Error) => done(err));
     },
   ),
 );
 
-passport.serializeUser(async (user, done) => {
+passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
 passport.deserializeUser(async (id: number, done) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id },
-    });
-    done(null, user);
+    const user = await prisma.user.findUnique({ where: { id } });
+    done(null, user ?? false);
   } catch (err) {
-    console.error('Could not deserialize user: ', err);
-    return done(err, null);
+    done(err as Error);
   }
 });
 
-auth.get('/login', passport.authenticate('google', {
+const router = Router();
+
+router.get('/login', passport.authenticate('google', {
   scope: ['profile', 'email'],
   prompt: 'select_account',
 }));
 
-auth.get('/redirect/google', passport.authenticate('google', {
+router.get('/redirect/google', passport.authenticate('google', {
   failureRedirect: '/login',
   successRedirect: '/',
 }));
 
-auth.get('/check', (req, res) => {
-  if (!req.isAuthenticated()) return res.status(401).json({ user: null });
+router.get('/check', (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ user: null });
+    return;
+  }
   res.json({ user: req.user });
 });
 
-export default auth;
+router.post('/logout', (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    req.session.destroy(() => res.sendStatus(200));
+  });
+});
+
+export default router;

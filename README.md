@@ -45,10 +45,15 @@
 // for ts and tsx files, to test console logs:
 // npx tsx [file name here].[file extension here]
 
-
-Links to npm I need to read again:
+### Links
+Docs:
 - [npm-ci](https://docs.npmjs.com/cli/v10/commands/npm-ci)
 
 - [package-lock.json](https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json)
 
 - [config-omit](https://docs.npmjs.com/cli/v10/using-npm/config#omit)
+
+- [prisma-generated](https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/generating-prisma-client)
+
+
+Wirefame:
